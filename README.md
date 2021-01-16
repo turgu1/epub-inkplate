@@ -4,6 +4,22 @@
 
 (Updated 2021.01.15)
 
+This is in preparation for version 1.2.0 The main ongoing modifications are:
+
+- [ ] Code refactoring and cleanup
+
+Added functional features:
+
+- [ ] Augmented CSS features
+
+Known bugs:
+
+- [ ] PNG image files transparency
+
+-----
+
+(Updated 2021.01.15)
+
 This is in preparation for version 1.1.0 The main ongoing modifications are:
 
 - [x] Support of the new upcoming Inkplate-10 device
