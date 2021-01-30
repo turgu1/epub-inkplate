@@ -11,7 +11,7 @@
 
 #include "strlcpy.hpp"
 
-#define APP_VERSION "1.1.0"
+#define APP_VERSION "1.2.0"
 
 #if !(defined(EPUB_LINUX_BUILD) || defined(EPUB_INKPLATE_BUILD)) 
   #error "BUILD_TYPE Not Set."
@@ -101,20 +101,20 @@ struct Pos {
 };
 
 // BREAK is BR... A defined BR in esp-idf is the cause of this!!
-enum class Element { BODY, P, LI, BREAK, H1, H2, H3, H4, H5, H6, 
-                      B, I, A, IMG, IMAGE, EM, DIV, SPAN, PRE,
-                      BLOCKQUOTE, STRONG };
+enum class Tag { BODY, P, LI, BREAK, H1, H2, H3, H4, H5, H6, 
+                 B, I, A, IMG, IMAGE, EM, DIV, SPAN, PRE,
+                 BLOCKQUOTE, STRONG };
 
-typedef std::unordered_map<std::string, Element> Elements;
+typedef std::unordered_map<std::string, Tag> Tags;
 
 #if __GLOBAL__
-  Elements elements
-  = {{"p",           Element::P}, {"div",     Element::DIV}, {"span", Element::SPAN}, {"br",  Element::BREAK}, {"h1",                 Element::H1},  
-     {"h2",         Element::H2}, {"h3",       Element::H3}, {"h4",     Element::H4}, {"h5",     Element::H5}, {"h6",                 Element::H6}, 
-     {"b",           Element::B}, {"i",         Element::I}, {"em",     Element::EM}, {"body", Element::BODY}, {"a",                   Element::A},
-     {"img",       Element::IMG}, {"image", Element::IMAGE}, {"li",     Element::LI}, {"pre",   Element::PRE}, {"blockquote", Element::BLOCKQUOTE},
-     {"strong", Element::STRONG}}
+  Tags tags
+  = {{"p",           Tag::P}, {"div",     Tag::DIV}, {"span", Tag::SPAN}, {"br",  Tag::BREAK}, {"h1",                 Tag::H1},  
+     {"h2",         Tag::H2}, {"h3",       Tag::H3}, {"h4",     Tag::H4}, {"h5",     Tag::H5}, {"h6",                 Tag::H6}, 
+     {"b",           Tag::B}, {"i",         Tag::I}, {"em",     Tag::EM}, {"body", Tag::BODY}, {"a",                   Tag::A},
+     {"img",       Tag::IMG}, {"image", Tag::IMAGE}, {"li",     Tag::LI}, {"pre",   Tag::PRE}, {"blockquote", Tag::BLOCKQUOTE},
+     {"strong", Tag::STRONG}}
   ;
 #else
-  extern Elements elements;
+  extern Tags tags;
 #endif

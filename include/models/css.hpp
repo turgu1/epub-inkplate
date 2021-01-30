@@ -154,6 +154,7 @@ class CSS
     // typedef std::vector<Properties> PropertySuites;
     typedef std::list<Properties *>                     PropertySuite;
     typedef std::forward_list<Properties *>             PropertySuiteList;
+
     typedef std::unordered_map<std::string, PropertyId> PropertyMap;
     typedef std::unordered_map<std::string, int16_t>    FontSizeMap;
 
@@ -164,7 +165,9 @@ class CSS
     static constexpr char const * TAG = "CSS";
 
     bool ghost; // Property suites come from other instances. So don't delete them...
+
     typedef std::unordered_map<Selector, PropertySuite> RulesMap;
+    
     RulesMap          rules_map;
     PropertySuiteList suites; // Linear line of suites to be deleted when the instance will be destroyed.
 

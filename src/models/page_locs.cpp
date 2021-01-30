@@ -486,7 +486,7 @@ PageLocs::page_locs_recurse(pugi::xml_node node, Page::Format fmt)
 
   image_filename.clear();
 
-  Elements::iterator element_it = elements.end();
+  Tags::iterator tag_it = tags.end();
   
   bool named_element = *(name = node.name()) != 0;
 
@@ -494,14 +494,14 @@ PageLocs::page_locs_recurse(pugi::xml_node node, Page::Format fmt)
 
     fmt.display = CSS::Display::INLINE;
 
-    if ((element_it = elements.find(name)) != elements.end()) {
+    if ((tag_it = tags.find(name)) != tags.end()) {
 
       //LOG_D("==> %10s [%5d] %4d", name, current_offset, page_out.get_pos_y());
 
-      switch (element_it->second) {
-        case Element::BODY:
-        case Element::SPAN:
-        case Element::A:
+      switch (tag_it->second) {
+        case Tag::BODY:
+        case Tag::SPAN:
+        case Tag::A:
           break;
 
       #if NO_IMAGE
@@ -510,7 +510,7 @@ PageLocs::page_locs_recurse(pugi::xml_node node, Page::Format fmt)
           break;
 
       #else
-        case Element::IMG: 
+        case Tag::IMG: 
           if (show_images) {
             xml_attribute attr = node.attribute("src");
             if (attr != nullptr) image_filename = attr.value();
@@ -523,7 +523,7 @@ PageLocs::page_locs_recurse(pugi::xml_node node, Page::Format fmt)
           }
           break;
 
-        case Element::IMAGE: 
+        case Tag::IMAGE: 
           if (show_images) {
             xml_attribute attr = node.attribute("xlink:href");
             if (attr != nullptr) image_filename = attr.value();
@@ -532,20 +532,20 @@ PageLocs::page_locs_recurse(pugi::xml_node node, Page::Format fmt)
           break;
 
       #endif
-        case Element::PRE:
+        case Tag::PRE:
           fmt.pre     = start_of_paragraph = true;
           fmt.display = CSS::Display::BLOCK;
           break;
 
-        case Element::LI:
-        case Element::DIV:
-        case Element::BLOCKQUOTE:
-        case Element::P:
+        case Tag::LI:
+        case Tag::DIV:
+        case Tag::BLOCKQUOTE:
+        case Tag::P:
           start_of_paragraph = true;
           fmt.display = CSS::Display::BLOCK;
           break;
 
-        case Element::BREAK:
+        case Tag::BREAK:
           SHOW_LOCATION("Page Break");
           if (!page_out.line_break(fmt)) {
             if (!page_locs_end_page(fmt)) return false;
@@ -555,8 +555,8 @@ PageLocs::page_locs_recurse(pugi::xml_node node, Page::Format fmt)
           current_offset++;
           break;
 
-        case Element::B:
-        case Element::STRONG: {
+        case Tag::B:
+        case Tag::STRONG: {
             Fonts::FaceStyle style = fmt.font_style;
             if      (style == Fonts::FaceStyle::NORMAL) style = Fonts::FaceStyle::BOLD;
             else if (style == Fonts::FaceStyle::ITALIC) style = Fonts::FaceStyle::BOLD_ITALIC;
@@ -564,8 +564,8 @@ PageLocs::page_locs_recurse(pugi::xml_node node, Page::Format fmt)
           }
           break;
 
-        case Element::I:
-        case Element::EM: {
+        case Tag::I:
+        case Tag::EM: {
             Fonts::FaceStyle style = fmt.font_style;
             if      (style == Fonts::FaceStyle::NORMAL) style = Fonts::FaceStyle::ITALIC;
             else if (style == Fonts::FaceStyle::BOLD  ) style = Fonts::FaceStyle::BOLD_ITALIC;
@@ -573,40 +573,40 @@ PageLocs::page_locs_recurse(pugi::xml_node node, Page::Format fmt)
           }
           break;
 
-        case Element::H1:
+        case Tag::H1:
           fmt.font_size          = 1.25 * fmt.font_size;
           fmt.line_height_factor = 1.25 * fmt.line_height_factor;
           start_of_paragraph = true;
           fmt.display = CSS::Display::BLOCK;
           break;
 
-        case Element::H2:
+        case Tag::H2:
           fmt.font_size          = 1.1 * fmt.font_size;
           fmt.line_height_factor = 1.1 * fmt.line_height_factor;
           start_of_paragraph = true;
           fmt.display = CSS::Display::BLOCK;
           break;
 
-        case Element::H3:
+        case Tag::H3:
           fmt.font_size          = 1.05 * fmt.font_size;
           fmt.line_height_factor = 1.05 * fmt.line_height_factor;
           start_of_paragraph = true;
           fmt.display = CSS::Display::BLOCK;
           break;
 
-        case Element::H4:
+        case Tag::H4:
           start_of_paragraph = true;
           fmt.display = CSS::Display::BLOCK;
           break;
 
-        case Element::H5:
+        case Tag::H5:
           fmt.font_size          = 0.8 * fmt.font_size;
           fmt.line_height_factor = 0.8 * fmt.line_height_factor;
           start_of_paragraph = true;
           fmt.display = CSS::Display::BLOCK;
           break;
           
-        case Element::H6:
+        case Tag::H6:
           fmt.font_size          = 0.7 * fmt.font_size;
           fmt.line_height_factor = 0.7 * fmt.line_height_factor;
           start_of_paragraph = true;
@@ -744,7 +744,7 @@ PageLocs::page_locs_recurse(pugi::xml_node node, Page::Format fmt)
 
     // In case that we are at the end of an html file and there remains
     // characters in the page pipeline, we call end_paragraph() to get them out on the page_out...
-    if ((element_it != elements.end()) && (element_it->second == Element::BODY)) {
+    if ((tag_it != tags.end()) && (tag_it->second == Tag::BODY)) {
       SHOW_LOCATION("End Paragraph 7");
       if (!page_out.end_paragraph(fmt)) {
         if (!page_locs_end_page(fmt)) return false;
