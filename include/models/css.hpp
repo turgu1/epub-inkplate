@@ -129,6 +129,44 @@ class CSS
                                          WIDTH,      HEIGHT,      DISPLAY
                                        };
 
+    // ---- Selector definition ----
+
+    enum class    NodeOp : uint8_t { NONE, DESCENDANT, CHILD };
+    enum class Qualifier : uint8_t { NONE, FIRST_CHILD       };
+
+    
+    #pragma pack(push, 1)
+      // The following is OK in a little endian context.
+      union Specificity {
+        int32_t value;
+        struct {
+          uint8_t c, b, a, filler;
+        } spec;
+      };
+
+      typedef std::forward_list<std::string> ClassList;
+
+      struct SelectorNode {
+        NodeOp      op;
+        Tag         tag;
+        std::string id;
+        ClassList   class_list;
+        Qualifier   qualifier;
+      };
+    #pragma pack(pop)
+
+    typedef std::list<SelectorNode> SelectorNodeList;
+
+    struct Selector {
+      Specificity specificity;
+      SelectorNodeList selector_node_list;
+    };
+
+    // typedef std::string                Selector;
+    typedef std::list<Selector>        Selectors;
+    
+    // ---- Property definition ----
+
     struct Value {
       float       num;
       std::string str;
@@ -141,17 +179,14 @@ class CSS
       } choice;
     };
 
-    typedef std::string                Selector;
     typedef std::forward_list<Value *> Values;
-    typedef std::list<Selector>        Selectors;
-    
+
     struct Property {
       PropertyId id;
       Values     values;
     };
 
     typedef std::forward_list<Property *>               Properties;
-    // typedef std::vector<Properties> PropertySuites;
     typedef std::list<Properties *>                     PropertySuite;
     typedef std::forward_list<Properties *>             PropertySuiteList;
 
@@ -175,9 +210,11 @@ class CSS
     std::string  file_folder_path; 
     const char * buffer_start;
 
-    static MemoryPool<Value>      value_pool;
-    static MemoryPool<Property>   property_pool;
-    static MemoryPool<Properties> properties_pool;
+    static MemoryPool<Value>                value_pool;
+    static MemoryPool<Property>          property_pool;
+    static MemoryPool<Properties>      properties_pool;
+    static MemoryPool<Selector>          selector_pool;
+    static MemoryPool<SelectorNode> selector_node_pool;
 
     const char *             parse_selector(const char * str, std::string & selector);
     static const char * parse_property_name(const char * str, std::string & name);
